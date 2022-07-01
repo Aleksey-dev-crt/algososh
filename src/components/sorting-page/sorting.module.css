@@ -1,0 +1,34 @@
+.container {
+    margin: 0 auto;
+    max-width: 980px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 75%;
+}
+
+.controlPanel {
+	display: flex;
+	align-items: center;
+}
+
+.radioButtons {
+    min-width: 221px;
+	display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-right: 52px;
+}
+
+.sortingButtons {
+	display: flex;
+    gap: 12px;
+    margin-right: 80px;
+}
+
+.array {
+	display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 10px;
+}

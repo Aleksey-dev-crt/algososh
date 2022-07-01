@@ -6,7 +6,6 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Circle } from '../ui/circle/circle';
 import { nanoid } from 'nanoid';
 import { ElementStates } from '../../types/element-states';
-import { swap } from '../../utils/utils';
 
 export const StringComponent: FC = () => {
 	type TSymbol = {
@@ -29,7 +28,7 @@ export const StringComponent: FC = () => {
 		let i = 0;
 		let j = elements.length - 1;
 		interval = setInterval(() => {
-			swap(elements, i, j);
+			[elements[i], elements[j]] = [elements[j], elements[i]];
 			elements[i].state = ElementStates.Modified;
 			elements[i + 1].state = ElementStates.Changing;
 			elements[j].state = ElementStates.Modified;
@@ -63,7 +62,7 @@ export const StringComponent: FC = () => {
 					onClick={reverseHandler}
 					isLoader={loader}></Button>
 			</div>
-			<div className={StringStyles.string}>
+			<div className={StringStyles.array}>
 				{symbols.map(({ symbol, state }: TSymbol) => (
 					<Circle letter={symbol} key={nanoid()} state={state}></Circle>
 				))}
