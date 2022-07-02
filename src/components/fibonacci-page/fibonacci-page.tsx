@@ -5,6 +5,7 @@ import { Circle } from '../ui/circle/circle';
 import { Input } from '../ui/input/input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { nanoid } from 'nanoid';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 export const FibonacciPage: FC = () => {
 	const [fibNumbers, setFibNumbers] = useState<string[]>([]);
@@ -16,28 +17,25 @@ export const FibonacciPage: FC = () => {
 		setValue(e.target.value);
 	};
 
-	const algorithm = (n: number) => {
+	const generateFibArr = (n: number) => {
 		setLoader(true);
 		const fibArr: string[] = [];
 		let i = 1;
 		interval = setInterval(() => {
-			if (i <= 2) {
-				fibArr.push('1');
-				setFibNumbers([...fibArr]);
-			} else {
-				fibArr.push(`${+fibArr[i - 2] + +fibArr[i - 3]}`);
-				setFibNumbers([...fibArr]);
-			}
+			if (i <= 2) fibArr.push('1');
+			else fibArr.push(`${+fibArr[i - 2] + +fibArr[i - 3]}`);
+
+			setFibNumbers([...fibArr]);
 
 			if (n === i - 1) {
 				setLoader(false);
 				clearInterval(interval);
 			}
 			i++;
-		}, 500);
+		}, SHORT_DELAY_IN_MS);
 	};
 
-	const reverseHandler = () => algorithm(+value);
+	const fibHandler = () => generateFibArr(+value);
 
 	return (
 		<SolutionLayout title='Последовательность Фибоначчи'>
@@ -49,11 +47,15 @@ export const FibonacciPage: FC = () => {
 					max={19}></Input>
 				<Button
 					text='Рассчитать'
-					onClick={reverseHandler}
+					onClick={fibHandler}
 					disabled={+value > 19}
 					isLoader={loader}></Button>
 			</div>
-			<div className={FibonacciStyles.fibonacci} style={{justifyContent: fibNumbers.length < 10 ? 'center' : 'flex-start'}}>
+			<div
+				className={FibonacciStyles.fibonacci}
+				style={{
+					justifyContent: fibNumbers.length < 10 ? 'center' : 'flex-start',
+				}}>
 				{fibNumbers.map((number: string, i: number) => (
 					<Circle letter={number} key={nanoid()} index={i}></Circle>
 				))}

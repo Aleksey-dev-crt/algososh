@@ -7,6 +7,7 @@ import { Direction } from '../../types/direction';
 import { nanoid } from 'nanoid';
 import { Column } from '../ui/column/column';
 import { ElementStates } from '../../types/element-states';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 export const SortingPage: FC = () => {
 	type TElement = {
@@ -64,7 +65,7 @@ export const SortingPage: FC = () => {
 				minIndex = 0;
 				clearInterval(interval);
 			}
-		}, 500);
+		}, SHORT_DELAY_IN_MS);
 	};
 
 	const sortBubble = (operator: string) => {
@@ -101,23 +102,25 @@ export const SortingPage: FC = () => {
 				if (operator === '>') setLoaderAscending(false);
 				clearInterval(interval);
 			}
-		}, 500);
+		}, SHORT_DELAY_IN_MS);
 	};
 
 	const sortAscending = () => {
-		array.map((el) => {
-			if (el.state === ElementStates.Modified)
-				return (el.state = ElementStates.Default);
-		});
+		array.map((el) =>
+			el.state === ElementStates.Modified
+				? (el.state = ElementStates.Default)
+				: el
+		);
 		if (sortingMethod === 'SELECTION') sortSelection('<');
 		if (sortingMethod === 'BUBBLE') sortBubble('>');
 	};
 
 	const sortDescending = () => {
-		array.map((el) => {
-			if (el.state === ElementStates.Modified)
-				return (el.state = ElementStates.Default);
-		});
+		array.map((el) =>
+			el.state === ElementStates.Modified
+				? (el.state = ElementStates.Default)
+				: el
+		);
 		if (sortingMethod === 'SELECTION') sortSelection('>');
 		if (sortingMethod === 'BUBBLE') sortBubble('<');
 	};
