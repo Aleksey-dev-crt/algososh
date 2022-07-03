@@ -24,7 +24,7 @@ export const StackPage: FC = () => {
 	const addHandler = () => {
 		stack.push({ element: value, state: ElementStates.Changing, top: '' });
 		stack.map((el) =>
-			el === stack[stack.length - 1] ? (el.top = ' top') : (el.top = '')
+			el === stack[stack.length - 1] ? (el.top = 'top') : (el.top = '')
 		);
 		setTimeout(() => {
 			stack[stack.length - 1].state = ElementStates.Default;
@@ -37,8 +37,8 @@ export const StackPage: FC = () => {
 		stack[stack.length - 1].state = ElementStates.Changing;
 		setTimeout(() => {
 			stack[stack.length - 1].state = ElementStates.Default;
-			stack.pop();
-			stack[stack.length - 1].top = 'top';
+			stack.splice(-1, 1);
+			if (stack.length) stack[stack.length - 1].top = 'top';
 			setStack([...stack]);
 		}, SHORT_DELAY_IN_MS);
 		setStack([...stack]);
