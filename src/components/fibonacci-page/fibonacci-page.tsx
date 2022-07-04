@@ -57,7 +57,7 @@ export const FibonacciPage: FC = () => {
 					justifyContent: fibNumbers.length < 10 ? 'center' : 'flex-start',
 				}}>
 				{fibNumbers.map((number: string, i: number) => (
-					<Circle letter={number} key={nanoid()} index={i}></Circle>
+					<Circle letter={number} key={nanoid()} index={i} />
 				))}
 			</div>
 		</SolutionLayout>

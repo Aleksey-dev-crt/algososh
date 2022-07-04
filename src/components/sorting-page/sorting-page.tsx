@@ -173,7 +173,7 @@ export const SortingPage: FC = () => {
 				</div>
 				<div className={SortingStyles.array}>
 					{array.map(({ element, state }: TElement) => (
-						<Column index={element} key={nanoid()} state={state}></Column>
+						<Column index={element} key={nanoid()} state={state} />
 					))}
 				</div>
 			</div>

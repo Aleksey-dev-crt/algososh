@@ -14,16 +14,16 @@ export const QueuePage: FC = () => {
 		state: ElementStates;
 		head: string;
 		tail: string;
-	};  
-  
+	};
+
 	const defaultQueue = Array.from({ length: 7 }, () => ({
-    element: '',
+		element: '',
 		state: ElementStates.Default,
 		head: '',
 		tail: '',
 	}));
-  
-  const [queue, setQueue] = useState<TQueueElement[]>(defaultQueue);
+
+	const [queue, setQueue] = useState<TQueueElement[]>(defaultQueue);
 
 	const [endOfQueue, setEndOfQueue] = useState<boolean>(false);
 	const [queueLength, setQueueLength] = useState<number>(0);
@@ -110,7 +110,8 @@ export const QueuePage: FC = () => {
 						head={head}
 						tail={tail}
 						state={state}
-						index={i}></Circle>
+						index={i}
+					/>
 				))}
 			</div>
 		</SolutionLayout>
