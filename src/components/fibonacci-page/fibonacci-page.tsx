@@ -5,37 +5,18 @@ import { Circle } from '../ui/circle/circle';
 import { Input } from '../ui/input/input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { nanoid } from 'nanoid';
-import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { generateFibArr } from '../../utils/algorithms';
 
 export const FibonacciPage: FC = () => {
 	const [fibNumbers, setFibNumbers] = useState<string[]>([]);
 	const [loader, setLoader] = useState<boolean>(false);
-	let interval: NodeJS.Timer;
-
 	const [value, setValue] = useState('');
+	
 	const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(e.target.value);
 	};
 
-	const generateFibArr = (n: number) => {
-		setLoader(true);
-		const fibArr: string[] = [];
-		let i = 1;
-		interval = setInterval(() => {
-			if (i <= 2) fibArr.push('1');
-			else fibArr.push(`${+fibArr[i - 2] + +fibArr[i - 3]}`);
-
-			setFibNumbers([...fibArr]);
-
-			if (n === i - 1) {
-				setLoader(false);
-				clearInterval(interval);
-			}
-			i++;
-		}, SHORT_DELAY_IN_MS);
-	};
-
-	const fibHandler = () => generateFibArr(+value);
+	const fibHandler = () => generateFibArr(+value, setLoader, setFibNumbers);
 
 	return (
 		<SolutionLayout title='Последовательность Фибоначчи'>

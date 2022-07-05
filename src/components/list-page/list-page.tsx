@@ -1,4 +1,4 @@
-import { FC, useState, ReactElement, Fragment } from 'react';
+import { FC, useState, Fragment } from 'react';
 import ListStyles from './list.module.css';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Input } from '../ui/input/input';
@@ -6,20 +6,19 @@ import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
 import { nanoid } from 'nanoid';
 import { ElementStates } from '../../types/element-states';
-import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 import { ArrowIcon } from '../ui/icons/arrow-icon';
 import { defaultList } from '../../constants/default-elements';
+import { TListElement } from '../../types/element-types';
+import {
+	addByIndex,
+	addToHead,
+	addToTail,
+	removeByIndex,
+	removeFromHead,
+	removeFromTail,
+} from '../../utils/algorithms';
 
 export const ListPage: FC = () => {
-	type TListElement = {
-		element: string;
-		state: ElementStates;
-		head: string | ReactElement;
-		tail: string | ReactElement;
-	};
-
-	let interval: NodeJS.Timer;
-
 	const [list, setList] = useState<TListElement[]>(defaultList);
 	const [value, setValue] = useState<string>('');
 	const [index, setIndex] = useState<string>('');
@@ -41,192 +40,43 @@ export const ListPage: FC = () => {
 		setIndex(e.target.value);
 	};
 
-	const addToHeadHandler = () => {
-		if (list.length === 8) return;
-		setLoaderAddToHead(true);
-		let step = 0;
-		list[0].head = (
-			<Circle isSmall={true} state={ElementStates.Changing} letter={value} />
+	const smallCircle = (value: string) => (
+		<Circle isSmall={true} state={ElementStates.Changing} letter={value} />
+	);
+
+	const addToHeadHandler = () =>
+		addToHead(list, value, setLoaderAddToHead, setList, setValue, smallCircle);
+
+	const addToTailHandler = () =>
+		addToTail(list, value, setLoaderAddToTail, setList, setValue, smallCircle);
+
+	const removeFromHeadHandler = () =>
+		removeFromHead(list, setLoaderRemoveFromHead, setList, smallCircle);
+
+	const removeFromTailHandler = () =>
+		removeFromTail(list, setLoaderRemoveFromTail, setList, smallCircle);
+
+	const addByIndexHandler = () =>
+		addByIndex(
+			list,
+			value,
+			index,
+			setLoaderAddByIndex,
+			setList,
+			setValue,
+			setIndex,
+			smallCircle
 		);
-		interval = setInterval(() => {
-			if (step === 0) {
-				list[0].head = '';
-				list.unshift({
-					element: value,
-					state: ElementStates.Modified,
-					head: 'head',
-					tail: '',
-				});
-			}
-			if (step === 1) list[0].state = ElementStates.Default;
-			if (step === 2) {
-				setLoaderAddToHead(false);
-				clearInterval(interval);
-			}
-			setList([...list]);
-			step++;
-		}, SHORT_DELAY_IN_MS);
-		setList([...list]);
-		setValue('');
-	};
 
-	const addToTailHandler = () => {
-		if (list.length === 8) return;
-		setLoaderAddToTail(true);
-		let step = 0;
-		list[list.length - 1].head = (
-			<Circle isSmall={true} state={ElementStates.Changing} letter={value} />
+	const removeByIndexHandler = () =>
+		removeByIndex(
+			list,
+			index,
+			setLoaderRemoveByIndex,
+			setList,
+			setIndex,
+			smallCircle
 		);
-		interval = setInterval(() => {
-			if (step === 0) {
-				list[list.length - 1].tail = '';
-				list[list.length - 1].head = '';
-				list.push({
-					element: value,
-					state: ElementStates.Modified,
-					head: '',
-					tail: 'tail',
-				});
-			}
-			if (step === 1) list[list.length - 1].state = ElementStates.Default;
-			if (step === 2) {
-				setLoaderAddToTail(false);
-				clearInterval(interval);
-			}
-			setList([...list]);
-			step++;
-		}, SHORT_DELAY_IN_MS);
-		setList([...list]);
-		setValue('');
-	};
-
-	const removeFromHeadHandler = () => {
-		if (list.length === 1) return;
-		setLoaderRemoveFromHead(true);
-		list[0].tail = (
-			<Circle
-				isSmall={true}
-				state={ElementStates.Changing}
-				letter={list[0].element}
-			/>
-		);
-		list[0].element = '';
-		setTimeout(() => {
-			list.shift();
-			list[0].head = 'head';
-			setLoaderRemoveFromHead(false);
-			setList([...list]);
-		}, SHORT_DELAY_IN_MS);
-	};
-
-	const removeFromTailHandler = () => {
-		if (list.length === 1) return;
-		setLoaderRemoveFromTail(true);
-		list[list.length - 1].tail = (
-			<Circle
-				isSmall={true}
-				state={ElementStates.Changing}
-				letter={list[list.length - 1].element}
-			/>
-		);
-		list[list.length - 1].element = '';
-		setTimeout(() => {
-			list.pop();
-			list[list.length - 1].tail = 'tail';
-			setLoaderRemoveFromTail(false);
-			setList([...list]);
-		}, SHORT_DELAY_IN_MS);
-	};
-
-	const addByIndexHandler = () => {
-		if (+index > list.length || /\D/g.test(index)) return;
-		setLoaderAddByIndex(true);
-		let step = 0;
-		const idx = +index;
-		list[0].head = (
-			<Circle isSmall={true} state={ElementStates.Changing} letter={value} />
-		);
-		interval = setInterval(() => {
-			if (step <= idx && step > 0) {
-				list[step - 1].state = ElementStates.Changing;
-				list[step - 1].head = '';
-				list[0].head = 'head';
-				if (step < list.length)
-					list[step].head = (
-						<Circle
-							isSmall={true}
-							state={ElementStates.Changing}
-							letter={value}
-						/>
-					);
-			}
-
-			if (step === idx + 1) {
-				if (step < list.length) list[step - 1].head = '';
-				list.map((el) => (el.state = ElementStates.Default));
-				list.splice(idx, 0, {
-					element: value,
-					state: ElementStates.Modified,
-					head: '',
-					tail: '',
-				});
-			}
-
-			if (step === idx + 2) {
-				list[idx].state = ElementStates.Default;
-				if (idx === 0) list[0].head = 'head';
-				if (idx === list.length - 1) {
-					list[idx - 1].tail = '';
-					list[list.length - 1].tail = 'tail';
-				}
-				setLoaderAddByIndex(false);
-				clearInterval(interval);
-			}
-			setList([...list]);
-			step++;
-		}, SHORT_DELAY_IN_MS);
-		setList([...list]);
-		setValue('');
-		setIndex('');
-	};
-
-	const removeByIndexHandler = () => {
-		if (+index > list.length - 1 || /\D/g.test(index)) return;
-		setLoaderRemoveByIndex(true);
-		let step = 0;
-		const idx = +index;
-		interval = setInterval(() => {
-			if (step <= idx && step > 0) {
-				list[step - 1].state = ElementStates.Changing;
-			}
-
-			if (step === idx + 1) {
-				list[step - 1].tail = (
-					<Circle
-						isSmall={true}
-						state={ElementStates.Changing}
-						letter={list[idx].element}
-					/>
-				);
-				list[step - 1].element = '';
-			}
-
-			if (step === idx + 2) {
-				list.splice(idx, 1);
-				if (idx === 0) list[0].head = 'head';
-				list.map((el) =>
-					el === list[list.length - 1] ? (el.tail = 'tail') : el
-				);
-				list.map((el) => (el.state = ElementStates.Default));
-				setLoaderRemoveByIndex(false);
-				clearInterval(interval);
-			}
-			setList([...list]);
-			step++;
-		}, SHORT_DELAY_IN_MS);
-		setList([...list]);
-		setIndex('');
-	};
 
 	return (
 		<SolutionLayout title='Связный список'>

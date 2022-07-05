@@ -5,44 +5,20 @@ import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
 import { Input } from '../ui/input/input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { ElementStates } from '../../types/element-states';
-import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { TStackElement } from '../../types/element-types';
+import { addToStack, removeFromStack } from '../../utils/algorithms';
 
 export const StackPage: FC = () => {
-	type TStackElement = {
-		element: string;
-		state: ElementStates;
-		top: string;
-	};
-
 	const [stack, setStack] = useState<TStackElement[]>([]);
 	const [value, setValue] = useState<string>('');
+	
 	const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(e.target.value);
 	};
 
-	const addHandler = () => {
-		stack.push({ element: value, state: ElementStates.Changing, top: '' });
-		stack.map((el) =>
-			el === stack[stack.length - 1] ? (el.top = 'top') : (el.top = '')
-		);
-		setTimeout(() => {
-			stack[stack.length - 1].state = ElementStates.Default;
-			setStack([...stack]);
-		}, SHORT_DELAY_IN_MS);
-		setValue('');
-	};
+	const addHandler = () => addToStack(stack, value, setStack, setValue);
 
-	const removeHandler = () => {
-		stack[stack.length - 1].state = ElementStates.Changing;
-		setTimeout(() => {
-			stack[stack.length - 1].state = ElementStates.Default;
-			stack.splice(-1, 1);
-			if (stack.length) stack[stack.length - 1].top = 'top';
-			setStack([...stack]);
-		}, SHORT_DELAY_IN_MS);
-		setStack([...stack]);
-	};
+	const removeHandler = () => removeFromStack(stack, setStack);
 
 	const clearHandler = () => setStack([]);
 
