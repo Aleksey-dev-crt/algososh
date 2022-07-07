@@ -9,17 +9,14 @@ import { ElementStates } from '../../types/element-states';
 import { ArrowIcon } from '../ui/icons/arrow-icon';
 import { defaultList } from '../../constants/default-elements';
 import { TListElement } from '../../types/element-types';
-import {
-	addByIndex,
-	addToHead,
-	addToTail,
-	removeByIndex,
-	removeFromHead,
-	removeFromTail,
-} from '../../utils/algorithms';
+import { linkedList } from '../../utils/linkedList';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 export const ListPage: FC = () => {
-	const [list, setList] = useState<TListElement[]>(defaultList);
+	const initialList = defaultList.toArray();
+	let interval: ReturnType<typeof setInterval>;
+
+	const [list, setList] = useState<TListElement[]>(initialList);
 	const [value, setValue] = useState<string>('');
 	const [index, setIndex] = useState<string>('');
 	const [loaderAddToHead, setLoaderAddToHead] = useState<boolean>(false);
@@ -44,39 +41,173 @@ export const ListPage: FC = () => {
 		<Circle isSmall={true} state={ElementStates.Changing} letter={value} />
 	);
 
-	const addToHeadHandler = () =>
-		addToHead(list, value, setLoaderAddToHead, setList, setValue, smallCircle);
+	const addToHeadHandler = () => {
+		if (list.length === 8) return;
+		setLoaderAddToHead(true);
+		let step = 0;
+		linkedList.toArray()[0].head = smallCircle(value);
+		interval = setInterval(() => {
+			if (step === 0) {
+				linkedList.toArray()[0].head = '';
+				linkedList.prepend({
+					element: value,
+					state: ElementStates.Modified,
+					head: 'head',
+					tail: '',
+				});
+			}
+			if (step === 1) linkedList.toArray()[0].state = ElementStates.Default;
+			if (step === 2) {
+				setLoaderAddToHead(false);
+				clearInterval(interval);
+			}
+			setList([...linkedList.toArray()]);
+			step++;
+		}, SHORT_DELAY_IN_MS);
+		setList([...linkedList.toArray()]);
+		setValue('');
+	};
 
-	const addToTailHandler = () =>
-		addToTail(list, value, setLoaderAddToTail, setList, setValue, smallCircle);
+	const addToTailHandler = () => {
+		setList([...linkedList.toArray()]);
+		if (list.length === 8) return;
+		setLoaderAddToTail(true);
+		let step = 0;
+		linkedList.toArray()[linkedList.size - 1].head = smallCircle(value);
+		interval = setInterval(() => {
+			if (step === 0) {
+				linkedList.toArray()[linkedList.size - 1].tail = '';
+				linkedList.toArray()[linkedList.size - 1].head = '';
+				linkedList.append({
+					element: value,
+					state: ElementStates.Modified,
+					head: '',
+					tail: 'tail',
+				});
+			}
+			if (step === 1)
+				linkedList.toArray()[linkedList.size - 1].state = ElementStates.Default;
+			if (step === 2) {
+				setLoaderAddToTail(false);
+				clearInterval(interval);
+			}
+			setList([...linkedList.toArray()]);
+			step++;
+		}, SHORT_DELAY_IN_MS);
+		setList([...linkedList.toArray()]);
+		setValue('');
+	};
 
-	const removeFromHeadHandler = () =>
-		removeFromHead(list, setLoaderRemoveFromHead, setList, smallCircle);
+	const removeFromHeadHandler = () => {
+		if (list.length === 1) return;
+		setLoaderRemoveFromHead(true);
+		linkedList.toArray()[0].tail = smallCircle(linkedList.toArray()[0].element);
+		linkedList.toArray()[0].element = '';
+		setTimeout(() => {
+			linkedList.deleteHead();
+			linkedList.toArray()[0].head = 'head';
+			setLoaderRemoveFromHead(false);
+			setList([...linkedList.toArray()]);
+		}, SHORT_DELAY_IN_MS);
+	};
 
-	const removeFromTailHandler = () =>
-		removeFromTail(list, setLoaderRemoveFromTail, setList, smallCircle);
-
-	const addByIndexHandler = () =>
-		addByIndex(
-			list,
-			value,
-			index,
-			setLoaderAddByIndex,
-			setList,
-			setValue,
-			setIndex,
-			smallCircle
+	const removeFromTailHandler = () => {
+		setList([...linkedList.toArray()]);
+		if (list.length === 1) return;
+		setLoaderRemoveFromTail(true);
+		linkedList.toArray()[linkedList.size - 1].tail = smallCircle(
+			linkedList.toArray()[linkedList.size - 1].element
 		);
+		linkedList.toArray()[linkedList.size - 1].element = '';
+		setTimeout(() => {
+			linkedList.deleteTail();
+			linkedList.toArray()[linkedList.size - 1].tail = 'tail';
+			setLoaderRemoveFromTail(false);
+			setList([...linkedList.toArray()]);
+		}, SHORT_DELAY_IN_MS);
+	};
 
-	const removeByIndexHandler = () =>
-		removeByIndex(
-			list,
-			index,
-			setLoaderRemoveByIndex,
-			setList,
-			setIndex,
-			smallCircle
-		);
+	const addByIndexHandler = () => {
+		setList([...linkedList.toArray()]);
+		if (+index > list.length || /\D/g.test(index)) return;
+		setLoaderAddByIndex(true);
+		let step = 0;
+		const idx = +index;
+		linkedList.toArray()[0].head = smallCircle(value);
+		interval = setInterval(() => {
+			if (step <= idx && step > 0) {
+				linkedList.toArray()[step - 1].state = ElementStates.Changing;
+				linkedList.toArray()[step - 1].head = '';
+				linkedList.toArray()[0].head = 'head';
+				if (step < linkedList.size)
+					linkedList.toArray()[step].head = smallCircle(value);
+			}
+			if (step === idx + 1) {
+				if (step <= list.length) list[step - 1].head = '';
+				linkedList.toArray().map((el) => (el.state = ElementStates.Default));
+				linkedList.addByIndex(
+					{
+						element: value,
+						state: ElementStates.Modified,
+						head: '',
+						tail: '',
+					},
+					+index
+				);
+			}
+			if (step === idx + 2) {
+				linkedList.toArray()[idx].state = ElementStates.Default;
+				if (idx === 0) linkedList.toArray()[0].head = 'head';
+				if (idx === linkedList.size - 1) {
+					linkedList.toArray()[idx - 1].tail = '';
+					linkedList.toArray()[linkedList.size - 1].tail = 'tail';
+				}
+				setLoaderAddByIndex(false);
+				clearInterval(interval);
+			}
+			setList([...linkedList.toArray()]);
+			step++;
+		}, SHORT_DELAY_IN_MS);
+		setList([...linkedList.toArray()]);
+		setValue('');
+		setIndex('');
+	};
+
+	const removeByIndexHandler = () => {
+		if (+index > list.length - 1 || /\D/g.test(index)) return;
+		setLoaderRemoveByIndex(true);
+		let step = 0;
+		const idx = +index;
+		interval = setInterval(() => {
+			if (step <= idx && step > 0) {
+				linkedList.toArray()[step - 1].state = ElementStates.Changing;
+			}
+			if (step === idx + 1) {
+				linkedList.toArray()[step - 1].tail = smallCircle(
+					linkedList.toArray()[idx].element
+				);
+				linkedList.toArray()[step - 1].element = '';
+			}
+			if (step === idx + 2) {
+				linkedList.deleteByIndex(+index);
+				if (idx === 0) linkedList.toArray()[0].head = 'head';
+				linkedList
+					.toArray()
+					.map((el) =>
+						el === linkedList.toArray()[linkedList.size - 1]
+							? (el.tail = 'tail')
+							: el
+					);
+				linkedList.toArray().map((el) => (el.state = ElementStates.Default));
+				setLoaderRemoveByIndex(false);
+				clearInterval(interval);
+			}
+			setList([...linkedList.toArray()]);
+			step++;
+		}, SHORT_DELAY_IN_MS);
+		setList([...linkedList.toArray()]);
+		setIndex('');
+	};
 
 	return (
 		<SolutionLayout title='Связный список'>

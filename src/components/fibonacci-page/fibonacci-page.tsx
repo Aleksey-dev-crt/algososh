@@ -5,7 +5,7 @@ import { Circle } from '../ui/circle/circle';
 import { Input } from '../ui/input/input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { nanoid } from 'nanoid';
-import { generateFibArr } from '../../utils/algorithms';
+import { generateFibArr } from '../../utils/fibonacci';
 
 export const FibonacciPage: FC = () => {
 	const [fibNumbers, setFibNumbers] = useState<string[]>([]);

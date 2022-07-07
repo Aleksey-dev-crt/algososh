@@ -6,21 +6,43 @@ import { Circle } from '../ui/circle/circle';
 import { Input } from '../ui/input/input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { TStackElement } from '../../types/element-types';
-import { addToStack, removeFromStack } from '../../utils/algorithms';
+import { st } from '../../utils/stack';
+import { ElementStates } from '../../types/element-states';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 export const StackPage: FC = () => {
 	const [stack, setStack] = useState<TStackElement[]>([]);
 	const [value, setValue] = useState<string>('');
-	
+
 	const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(e.target.value);
 	};
 
-	const addHandler = () => addToStack(stack, value, setStack, setValue);
+	const addHandler = () => {
+		st.push({ element: value, state: ElementStates.Changing, top: '' });
+		st.getElements().map((el) =>
+			el === st.getElements()[st.getSize() - 1] ? (el.top = 'top') : (el.top = '')
+		);
+		setStack([...st.getElements()])
+		setTimeout(() => {
+			st.getElements()[st.getSize() - 1].state = ElementStates.Default;
+			setStack([...st.getElements()]);
+		}, SHORT_DELAY_IN_MS);
+		setValue('');
+	};
 
-	const removeHandler = () => removeFromStack(stack, setStack);
+	const removeHandler = () => {
+		st.getElements()[st.getSize() - 1].state = ElementStates.Changing;
+		setTimeout(() => {
+			st.getElements()[st.getSize() - 1].state = ElementStates.Default;
+			st.pop()
+			if (st.getSize() > 0) st.getElements()[st.getSize() - 1].top = 'top';
+			setStack([...st.getElements()]);
+		}, SHORT_DELAY_IN_MS);
+		setStack([...st.getElements()]);	
+	}
 
-	const clearHandler = () => setStack([]);
+	const clearHandler = () => setStack([...st.clear()]);
 
 	return (
 		<SolutionLayout title='Стек'>

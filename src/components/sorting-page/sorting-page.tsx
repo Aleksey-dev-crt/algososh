@@ -12,7 +12,7 @@ import {
 	resetArray,
 	sortBubble,
 	sortSelection,
-} from '../../utils/algorithms';
+} from '../../utils/sorting';
 
 export const SortingPage: FC = () => {
 	const [array, setArray] = useState<TElement[]>([]);

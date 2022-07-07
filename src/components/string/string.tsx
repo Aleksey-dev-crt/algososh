@@ -6,7 +6,7 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { Circle } from '../ui/circle/circle';
 import { nanoid } from 'nanoid';
 import { ElementStates } from '../../types/element-states';
-import { reverseString } from '../../utils/algorithms';
+import { reverseString } from '../../utils/string';
 import { TSymbol } from '../../types/element-types';
 
 export const StringComponent: FC = () => {

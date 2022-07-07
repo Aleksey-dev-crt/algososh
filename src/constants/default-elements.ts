@@ -1,28 +1,31 @@
-import { ElementStates } from "../types/element-states";
+import { ElementStates } from '../types/element-states';
+import { linkedList } from '../utils/linkedList';
 
-export const defaultList = [
-    {
-        element: '0',
-        state: ElementStates.Default,
-        head: 'head',
-        tail: '',
-    },
-    {
-        element: '34',
-        state: ElementStates.Default,
-        head: '',
-        tail: '',
-    },
-    {
-        element: '8',
-        state: ElementStates.Default,
-        head: '',
-        tail: '',
-    },
-    {
-        element: '1',
-        state: ElementStates.Default,
-        head: '',
-        tail: 'tail',
-    },
+const defaultArr = [
+	{
+		element: `${Math.floor(Math.random() * 100)}`,
+		state: ElementStates.Default,
+		head: 'head',
+		tail: '',
+	},
+	{
+		element: `${Math.floor(Math.random() * 100)}`,
+		state: ElementStates.Default,
+		head: '',
+		tail: '',
+	},
+	{
+		element: `${Math.floor(Math.random() * 100)}`,
+		state: ElementStates.Default,
+		head: '',
+		tail: '',
+	},
+	{
+		element: `${Math.floor(Math.random() * 100)}`,
+		state: ElementStates.Default,
+		head: '',
+		tail: 'tail',
+	},
 ];
+
+export const defaultList = linkedList.fromArray(defaultArr);
