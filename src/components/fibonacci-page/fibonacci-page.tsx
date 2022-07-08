@@ -11,8 +11,9 @@ export const FibonacciPage: FC = () => {
 	const [fibNumbers, setFibNumbers] = useState<string[]>([]);
 	const [loader, setLoader] = useState<boolean>(false);
 	const [value, setValue] = useState('');
-	
+
 	const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+		e.target.value = e.target.value.substr(0, 2);
 		setValue(e.target.value);
 	};
 
@@ -23,7 +24,7 @@ export const FibonacciPage: FC = () => {
 			<div className={FibonacciStyles.container}>
 				<Input
 					onChange={onChangeInput}
-					isLimitText
+					isLimitText={true}
 					type='number'
 					max={19}></Input>
 				<Button

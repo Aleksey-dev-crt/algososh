@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import SortingStyles from './sorting.module.css';
 import { Button } from '../ui/button/button';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
@@ -19,6 +19,10 @@ export const SortingPage: FC = () => {
 	const [loaderAscending, setLoaderAscending] = useState<boolean>(false);
 	const [loaderDescending, setLoaderDescending] = useState<boolean>(false);
 	const [sortingMethod, setSortingMethod] = useState<string>('SELECTION');
+
+	useEffect(() => {
+		randomArr(setArray);
+	}, []);
 
 	const onChangeRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSortingMethod(e.target.value);
