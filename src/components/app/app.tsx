@@ -1,5 +1,5 @@
-import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import AppStyles from './app.module.css'
 import { FibonacciPage } from "../fibonacci-page/fibonacci-page";
 import { ListPage } from "../list-page/list-page";
 import { MainPage } from "../main-page/main-page";
@@ -8,11 +8,9 @@ import { StringComponent } from "../string/string";
 import { SortingPage } from "../sorting-page/sorting-page";
 import { StackPage } from "../stack-page/stack-page";
 
-import "./app.css";
-
 function App() {
   return (
-    <div className="app">
+    <div className={AppStyles.app}>
       <BrowserRouter>
         <Switch>
           <Route path="/" exact>

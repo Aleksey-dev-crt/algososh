@@ -1,0 +1,18 @@
+.container {
+	margin: 0 auto;
+	display: flex;
+    justify-content: space-between;
+	max-width: 829px;
+}
+.controls {
+	display: flex;
+	min-width: 630px;
+	gap: 12px;
+}
+
+.queue {
+    margin-top: 48px;
+	display: flex;
+    justify-content: center;
+    gap: 16px;
+}

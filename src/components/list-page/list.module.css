@@ -1,0 +1,24 @@
+.container {
+	margin: 0 auto;
+	display: flex;
+    flex-direction: column;
+	max-width: 952px;
+    row-gap: 12px;
+}
+
+.controls {
+	display: flex;
+	column-gap: 12px;
+}
+
+.list {
+    margin-top: 90px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 16px;   
+}
+
+.list svg:last-child {
+    display: none;
+}
