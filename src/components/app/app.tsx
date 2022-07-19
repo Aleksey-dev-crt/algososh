@@ -13,7 +13,7 @@ function App() {
     <div className={AppStyles.app}>
       <BrowserRouter>
         <Switch>
-          <Route path="/" exact>
+          <Route path="/algososh" exact>
             <MainPage />
           </Route>
           <Route path="/recursion">
