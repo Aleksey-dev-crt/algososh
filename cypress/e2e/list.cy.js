@@ -349,7 +349,6 @@ describe('Связный список', function () {
 		cy.get('@list')
 			.find('[class^=circle_content__]')
 			.each((el, index) => {
-				cy.wrap(el).should('contain', ['5', '', '', '', '', '42'][index]);
 				cy.wrap(el).should('contain', ['head', '', '', '', '', 'tail'][index]);
 				cy.wrap(el).should(
 					'have.css',
