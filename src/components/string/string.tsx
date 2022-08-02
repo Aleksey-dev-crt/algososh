@@ -9,7 +9,7 @@ import { ElementStates } from '../../types/element-states';
 import { reverseString } from '../../utils/string';
 import { TSymbol } from '../../types/element-types';
 
-export const StringComponent: FC = () => {
+export const String: FC = () => {
 	const [symbols, setSymbols] = useState<TSymbol[]>([]);
 	const [loader, setLoader] = useState<boolean>(false);
 	const [value, setValue] = useState<string>('');
@@ -26,7 +26,7 @@ export const StringComponent: FC = () => {
 	};
 
 	return (
-		<SolutionLayout title='Строка'>
+		<>
 			<div className={StringStyles.container}>
 				<Input onChange={onChangeInput} isLimitText maxLength={11}></Input>
 				<Button
@@ -37,9 +37,21 @@ export const StringComponent: FC = () => {
 			</div>
 			<div className={StringStyles.string}>
 				{symbols.map(({ symbol, state }: TSymbol) => (
-					<Circle letter={symbol} key={nanoid()} state={state} />
+					<Circle
+						letter={symbol}
+						key={nanoid()}
+						state={state}
+					/>
 				))}
 			</div>
+		</>
+	);
+};
+
+export const StringComponent: FC = () => {
+	return (
+		<SolutionLayout title='Строка'>
+			<String />
 		</SolutionLayout>
 	);
 };

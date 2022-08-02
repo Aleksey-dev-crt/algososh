@@ -30,7 +30,7 @@ export const FibonacciPage: FC = () => {
 				<Button
 					text='Рассчитать'
 					onClick={fibHandler}
-					disabled={+value > 19}
+					disabled={+value > 19 || !value}
 					isLoader={loader}></Button>
 			</div>
 			<div

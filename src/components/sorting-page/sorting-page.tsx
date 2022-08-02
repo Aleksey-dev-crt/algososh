@@ -14,7 +14,7 @@ import {
 	sortSelection,
 } from '../../utils/sorting';
 
-export const SortingPage: FC = () => {
+export const Sorting: FC = () => {
 	const [array, setArray] = useState<TElement[]>([]);
 	const [loaderAscending, setLoaderAscending] = useState<boolean>(false);
 	const [loaderDescending, setLoaderDescending] = useState<boolean>(false);
@@ -59,48 +59,54 @@ export const SortingPage: FC = () => {
 	const generateArrHandler = () => randomArr(setArray);
 
 	return (
-		<SolutionLayout title='Сортировка массива'>
-			<div className={SortingStyles.container}>
-				<div className={SortingStyles.controlPanel}>
-					<div className={SortingStyles.radioButtons} onChange={onChangeRadio}>
-						<RadioInput
-							label={'Выбор'}
-							value='SELECTION'
-							name='sorting'
-							defaultChecked></RadioInput>
-						<RadioInput
-							label={'Пузырек'}
-							value='BUBBLE'
-							name='sorting'></RadioInput>
-					</div>
-					<div className={SortingStyles.sortingButtons}>
-						<Button
-							text='По&nbsp;возрастанию'
-							onClick={sortAscending}
-							style={{ minWidth: '205px' }}
-							sorting={Direction.Ascending}
-							disabled={!array.length || loaderDescending}
-							isLoader={loaderAscending}></Button>
-						<Button
-							text='По&nbsp;убыванию'
-							onClick={sortDescending}
-							style={{ minWidth: '205px' }}
-							sorting={Direction.Descending}
-							disabled={!array.length || loaderAscending}
-							isLoader={loaderDescending}></Button>
-					</div>
+		<div className={SortingStyles.container}>
+			<div className={SortingStyles.controlPanel}>
+				<div className={SortingStyles.radioButtons} onChange={onChangeRadio}>
+					<RadioInput
+						label={'Выбор'}
+						value='SELECTION'
+						name='sorting'
+						defaultChecked></RadioInput>
+					<RadioInput
+						label={'Пузырек'}
+						value='BUBBLE'
+						name='sorting'></RadioInput>
+				</div>
+				<div className={SortingStyles.sortingButtons}>
 					<Button
-						text='Новый массив'
-						onClick={generateArrHandler}
-						disabled={loaderDescending || loaderAscending}
-						style={{ minWidth: '205px' }}></Button>
+						text='По&nbsp;возрастанию'
+						onClick={sortAscending}
+						style={{ minWidth: '205px' }}
+						sorting={Direction.Ascending}
+						disabled={!array.length || loaderDescending}
+						isLoader={loaderAscending}></Button>
+					<Button
+						text='По&nbsp;убыванию'
+						onClick={sortDescending}
+						style={{ minWidth: '205px' }}
+						sorting={Direction.Descending}
+						disabled={!array.length || loaderAscending}
+						isLoader={loaderDescending}></Button>
 				</div>
-				<div className={SortingStyles.array}>
-					{array.map(({ element, state }: TElement) => (
-						<Column index={element} key={nanoid()} state={state} />
-					))}
-				</div>
+				<Button
+					text='Новый массив'
+					onClick={generateArrHandler}
+					disabled={loaderDescending || loaderAscending}
+					style={{ minWidth: '205px' }}></Button>
 			</div>
+			<div className={SortingStyles.array}>
+				{array.map(({ element, state }: TElement) => (
+					<Column index={element} key={nanoid()} state={state} />
+				))}
+			</div>
+		</div>
+	);
+};
+
+export const SortingPage: FC = () => {
+	return (
+		<SolutionLayout title='Сортировка массива'>
+			<Sorting />
 		</SolutionLayout>
 	);
 };

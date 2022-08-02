@@ -15,11 +15,17 @@ export const reverseString = (
 	let i = 0;
 	let j = elements.length - 1;
 	interval = setInterval(() => {
+		if (elements.length === 1) {
+			elements[i].state = ElementStates.Modified;
+			loaderSetter(false);
+			clearInterval(interval);
+			return
+		}
 		[elements[i], elements[j]] = [elements[j], elements[i]];
 		elements[i].state = ElementStates.Modified;
 		elements[i + 1].state = ElementStates.Changing;
-		elements[j].state = ElementStates.Modified;
 		elements[j - 1].state = ElementStates.Changing;
+		elements[j].state = ElementStates.Modified;
 		SymbolsSetter([...elements]);
 		i++;
 		j--;
